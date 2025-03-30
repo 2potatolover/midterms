@@ -1,4 +1,4 @@
-import { Text, View, Button, Platform, TouchableOpacity, StatusBar } from "react-native";
+import { Text, View, Button, Platform, TouchableOpacity, StatusBar, useColorScheme } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { Props } from '../navigation/props'
 import styles from "../styles/styles";
@@ -19,12 +19,8 @@ const Profile: React.FC<Props> = ({ navigation }) =>  {
 
       <View style={styles.statsContainer}>
         <View style={styles.stat}>
-          <Text style={styles.statLabel}>Events Attended</Text>
+          <Text style={styles.statLabel}>Jobs saved</Text>
           <Text style={styles.statValue}>8</Text>
-        </View>
-        <View style={styles.stat}>
-          <Text style={styles.statLabel}>Total Points</Text>
-          <Text style={styles.statValue}>1,000</Text>
         </View>
       </View>
     </View>

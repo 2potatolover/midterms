@@ -7,26 +7,16 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { Calendar } from "react-native-calendars";
 import {SafeAreaView, SafeAreaProvider} from 'react-native-safe-area-context';
 
-const DismissKeyboard = ({ children }) => (
-    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-        {children}
-    </TouchableWithoutFeedback>
-)
-
 const Announcements: React.FC<Props> = ({ navigation }) => {
 
 
 
     const jpcsLogo = require("../database/images/jpcsLogo.jpg");
-    const [selectedDate, setSelectedDate] = useState<string | null>(null);
-
-    const handleDayPress = (day: { dateString: string }) => {
-        setSelectedDate(day.dateString);
-    };
     const [isEnabled, setIsEnabled] = useState(false);
     const toggleSwitch = () => setIsEnabled(previousState => !previousState);
 
     return (
+      
         <SafeAreaProvider>
         <SafeAreaView style={styles.container}>
             <Text>Dark Mode</Text>
@@ -37,6 +27,7 @@ const Announcements: React.FC<Props> = ({ navigation }) => {
             onValueChange={toggleSwitch}
             value={isEnabled}
           />
+          
         </SafeAreaView>
       </SafeAreaProvider>
 
