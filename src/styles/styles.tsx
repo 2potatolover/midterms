@@ -129,13 +129,13 @@ const styles = StyleSheet.create({
 
 
     // home styles
-
-    home_container: {
+    
+    home_container:(isDark)=> ({
       flex: 1,
-      backgroundColor: '#F2F2F2',
-      paddingHorizontal: 20,
-      paddingTop: 40,
-    },
+      backgroundColor: isDark === true ?  "#222222" : '#F2F2F2',
+      alignItems: 'center',
+      justifyContent: 'center',
+ }),
     topBar: {
       flexDirection: 'row',
       justifyContent: 'space-between',
@@ -153,12 +153,13 @@ const styles = StyleSheet.create({
       borderRadius: 10,
       marginBottom: 20,
     },
-    sectionTitle: {
-      fontSize: 18,
+    
+    sectionTitle:(isDark)=> ({
+         fontSize: 18,
       fontWeight: 'bold',
-      color: '#1D3B1D',
+      color: isDark === true ?  '#ffffff' : '#000000',
       marginBottom: 10,
-    },
+    }),
     eventCard: {
       backgroundColor: '#B6D7A8',
       padding: 15,
@@ -169,21 +170,24 @@ const styles = StyleSheet.create({
       color: '#1D3B1D',
       fontWeight: 'bold',
     },
-    eventItem: {
-      backgroundColor: '#FFFFFF',
+    eventItem:(isDark)=> ({
+      backgroundColor: isDark === true ?   '#A9A9A9' : '#ffffff',
       padding: 15,
       borderRadius: 10,
       marginBottom: 10,
-    },
-    eventTitle: {
+    }),
+
+    eventTitle:(isDark)=> ({
       fontSize: 16,
       fontWeight: 'bold',
-      color: '#1D3B1D',
-    },
-    eventDescription: {
+      color: isDark === true ?  '#ffffff' : '#000000',
+      
+    }),
+    eventDescription:(isDark)=> ({
       fontSize: 14,
-      color: '#666',
-    },
+      color: isDark === true ?  '#ffffff' : '#000000',
+      
+    }),
     eventTime: {
       fontSize: 12,
       color: '#999',
@@ -357,7 +361,46 @@ const styles = StyleSheet.create({
     },
 
     // END of PROFILE styles
-  
+    centeredView: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    modalView: {
+      margin: 40,
+      backgroundColor: 'white',
+      borderRadius: 20,
+      padding: 10,
+      alignItems: 'center',
+      shadowColor: '#000',
+      shadowOffset: {
+        width: 0,
+        height: 0,
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 4,
+      elevation: 5,
+    },
+    button: {
+      borderRadius: 20,
+      padding: 10,
+      elevation: 2,
+    },
+    buttonOpen: {
+      backgroundColor: '#F194FF',
+    },
+    buttonClose: {
+      backgroundColor: '#2196F3',
+    },
+    textStyle: {
+      color: 'white',
+      fontWeight: 'bold',
+      textAlign: 'center',
+    },
+    modalText: {
+      marginBottom: 15,
+      textAlign: 'center',
+    },
     
   });
 

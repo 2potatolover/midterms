@@ -1,10 +1,11 @@
-import { Text, View, FlatList, ActivityIndicator, StatusBar, Button, ToastAndroid, TextInput} from "react-native";
+import { Text, View, FlatList, ActivityIndicator, StatusBar, Button, ToastAndroid, TextInput, Switch} from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import { NavigationContainer } from "@react-navigation/native";
 import { Props } from '../navigation/props'
 import styles from "../styles/styles";
 import {useEffect, useState} from "react"
 import filter from "lodash.filter";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 
   const  Api = () => {
@@ -14,6 +15,8 @@ import filter from "lodash.filter";
     let[response,setResponse] = useState([]);
     let[searchQuery,setSearchQuery] = useState();
     let[searchData, setSearchData] = useState([]);
+    const toggleSwitch = () => setIsDark(previousState => !previousState);
+    let[isDark, setIsDark] = useState(false);
     let ids = 1;
 
     useEffect(() => {
@@ -113,25 +116,33 @@ import filter from "lodash.filter";
         }
     }
     return (
-        <View style={styles.home_container}>
+        <View style={styles.home_container(isDark)}>
       <Text style={styles.sectionTitle}>Listed Jobs</Text>
-      <TextInput style={styles.searchbar}value={searchQuery} onChangeText={(query) => handleSearch(query)}></TextInput>
+      <TextInput placeholder="Search jobs here..."style={styles.searchbar}value={searchQuery} onChangeText={(query) => handleSearch(query)}></TextInput>
+      <Text style={styles.Text(isDark)}>Dark Mode</Text>
+<Switch
+                onValueChange={toggleSwitch}
+                value={isDark}
+                
+              />
+              
       <FlatList
       
         data={response}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <View style={styles.eventItem}>
+          <View style={styles.eventItem(isDark)}>
             {getContent()}
-            <Text style={styles.eventTitle}>{item.title}</Text>
-            <Text style={styles.eventDescription}>{item.companyName}</Text>
-            <Text style={styles.eventDescription}>Minimum Salary: {item.minSalary}</Text>
-            <Text style={styles.eventDescription}>Maximum Salary: {item.maxSalary}</Text>
-            <Text style={styles.eventTime}>{item.id}</Text>
+            <Text style={styles.eventTitle(isDark)}>{item.title}</Text>
+            <Text style={styles.eventDescription(isDark)}>{item.companyName}</Text>
+            <Text style={styles.eventDescription(isDark)}>Minimum Salary: {item.minSalary}</Text>
+            <Text style={styles.eventDescription(isDark)}>Maximum Salary: {item.maxSalary}</Text>
             <Button title="Save Data" onPress={() => addSavedJobs(item.id)}/>
+              <Text></Text>
           </View>
         )}
       />
+      
     </View>
     )
 }

@@ -12,9 +12,7 @@ const Announcements: React.FC<Props> = ({ navigation }) => {
 
 
 
-    const jpcsLogo = require("../database/images/jpcsLogo.jpg");
-    const [isEnabled, setIsEnabled] = useState(false);
-        
+    const jpcsLogo = require("../database/images/jpcsLogo.jpg");      
     const toggleSwitch = () => setIsDark(previousState => !previousState);
     let[isDark, setIsDark] = useState(false);
   

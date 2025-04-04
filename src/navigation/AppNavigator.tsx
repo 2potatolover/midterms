@@ -52,7 +52,6 @@ const HomeScreenNavigator: React.FC<Props> = ({ navigation }) => {
             
             <Tab.Screen name="Home" component={Home} />
             <Tab.Screen name="Saved" component={Rewards} />
-            <Tab.Screen name="Application" component={Calendar}/>
             <Tab.Screen name="Profile" component={Profile}  options={{  headerRight: () =>
             <TouchableOpacity onPress={() => navigation.navigate('AnnouncementsNav') } style={{ paddingHorizontal: 20 }}>
                 <Ionicons name="settings-outline" size={20} /> 

@@ -16,13 +16,6 @@ const Profile: React.FC<Props> = ({ navigation }) =>  {
         <View style={styles.pictureSlot} />
         <Text style={styles.userLabel}>User</Text>
       </View>
-
-      <View style={styles.statsContainer}>
-        <View style={styles.stat}>
-          <Text style={styles.statLabel}>Jobs saved</Text>
-          <Text style={styles.statValue}>8</Text>
-        </View>
-      </View>
     </View>
 
     )

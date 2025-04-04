@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Text, View, TouchableOpacity, ScrollView, Button, Modal, SafeAreaView, ActivityIndicator, Image, FlatList } from "react-native";
+import { Text, View, TouchableOpacity, ScrollView, Button, Modal, SafeAreaView, ActivityIndicator, Image, FlatList, Switch, Pressable, TextInput} from "react-native";
 import { Props } from "../navigation/props";
 import styles from "../styles/styles";
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { useFocusEffect, useIsFocused } from "@react-navigation/native";
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 const Rewards: React.FC<Props> = ({ navigation }) => {
 
@@ -16,7 +17,10 @@ const Rewards: React.FC<Props> = ({ navigation }) => {
     const [jobData, setJobData] = useState([]);
     const isFocused = useIsFocused();
     const [refreshing, setRefreshing] = useState(false)
-    
+    const toggleSwitch = () => setIsDark(previousState => !previousState);
+    let[isDark, setIsDark] = useState(false);
+    const [modalVisible, setModalVisible] = useState(false);
+
 
     useEffect(() => {
         fetchData();
@@ -85,17 +89,33 @@ const Rewards: React.FC<Props> = ({ navigation }) => {
 
     function renderModal() {
         return (
-            <Modal visible={openModal} animationType="slide" transparent={true}>
-                <View style={styles.application_container}>
-                    <View style={styles.application_inner_container}>
-                        <Text>Insert Forms</Text>
-                        <TouchableOpacity onPress={() => setOpenModal(false)}>
-                            <Text>Close</Text>
-                        </TouchableOpacity>
-                    </View>
-
+            <SafeAreaProvider>
+            <SafeAreaView>
+              <Modal
+                animationType="slide"
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose={() => {
+                  setModalVisible(!modalVisible);
+                }}>
+                <View>
+                  <View>
+                    <Text>Hello World!</Text>
+                    <Pressable
+                      style={[styles.button, styles.buttonClose]}
+                      onPress={() => setModalVisible(!modalVisible)}>
+                      <Text>Hide Modal</Text>
+                    </Pressable>
+                  </View>
                 </View>
-            </Modal>
+              </Modal>
+              <Pressable
+                style={[styles.button, styles.buttonOpen]}
+                onPress={() => setModalVisible(true)}>
+                <Text style={styles.textStyle}>Show Modal</Text>
+              </Pressable>
+            </SafeAreaView>
+          </SafeAreaProvider>
         )
     }
 
@@ -119,73 +139,77 @@ const Rewards: React.FC<Props> = ({ navigation }) => {
     }
 
 
-    const renderSavedJobs = ({ item }) => {
-        return (
-            <View key={item.id}>
-                <TouchableOpacity style={styles.job_list}>
-                    <View style={styles.job_list_inner}>
-                        <View style={styles.job_list_inner_img_wrapper}>
-                            <Image height={80} width={80} source={{ uri: item.companyLogo }} />
-                            <View style={styles.job_list_inner_txt}>
-                                <Text style={styles.job_list_inner_txt_title}>{item.title}</Text>
-                                <Text>{item.companyName}</Text>
-                                <Text style={styles.job_list_inner_txt_info}>{item.seniorityLevel} ● {item.workModel} ● {item.jobType}</Text>
-                            </View>
-                        </View>
-
-                    </View>
-                    <View style={{ marginBottom: 10 }}>
-                        <Text style={styles.job_list_inner_txt_salary}>{item.minSalary && item.maxSalary ? (
-                            <>
-                                <Text>${item.minSalary} - ${item.maxSalary}</Text>
-
-                            </>) : (
-                            <Text>Unknown Salary</Text>
-                        )}</Text>
-                    </View>
-                    <View style={{ alignItems: 'center', left: 10 }}>
-                        {/* <TouchableOpacity>
-                                            <Ionicons name="bookmark-outline" size={24} color={COLOURS.black} />
-                                        </TouchableOpacity> */}
-                        <TouchableOpacity>
-                            <Text>Apply for Job</Text>
-                        </TouchableOpacity>
-                    </View>
-                </TouchableOpacity>
-
-            </View>
-
-        )
-    }
 
     return (
+        <View style={styles.home_container(isDark)}>
 
-        <View style={styles.eventItem}>
-                <View style={styles.savedJobs}>
-                    <Text style={styles.home_header_title}>Save Jobs</Text>
-                    <TouchableOpacity onPress={() => navigation.navigate('JobsFinder')}>
-                        <Ionicons name="home-outline" size={25}></Ionicons>
-                    </TouchableOpacity>
-                    
-                    {renderModal()}
+            <Text style={styles.sectionTitle(isDark)}>Saved Jobs</Text>
+            <Text style={styles.Text(isDark)}>Dark Mode</Text>
+<Switch
+                onValueChange={toggleSwitch}
+                value={isDark}
+                
+              />
+                  
 
-                </View>
-                <View>
+              
                     {/* {savedJobs ? savedJobs.map(renderSavedJobs) : <Text>No jobs saved</Text>} */}
                     <FlatList
+                    
                         data={savedJobs}
-                        renderItem={(item) => renderSavedJobs(item)}
                         keyExtractor={(renderSavedJobs, index) => index.toString()}
                         refreshing={refreshing}
                         onRefresh={handleRefresh}
+                        
+                        renderItem={({item}) => (
+                            <View style={styles.eventItem(isDark)}>
+                            
+                            <Text style={styles.eventTitle(isDark)}>{item.title}</Text>
+                            <Text style={styles.eventDescription(isDark)}>{item.companyName}</Text>
+                            <Text style={styles.eventDescription(isDark)}>Minimum Salary: {item.minSalary}</Text>
+                            <Text style={styles.eventDescription(isDark)}>Maximum Salary: {item.maxSalary}</Text>
+                            <Modal
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => {
+            setModalVisible(!modalVisible);
+          }}>
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+            
+            <Text>Name</Text>
+            <TextInput style={styles.emainInput} placeholder=" Enter Email" editable></TextInput>
+            <Text>E-mail</Text>
+            <TextInput style={styles.emainInput} placeholder=" Enter Email" editable></TextInput>
+            <Text>Contact No.</Text>
+            <TextInput style={styles.emainInput} placeholder=" Enter Email" editable></TextInput>
+            <Text>Why should we hire you?</Text>
+            <TextInput style={styles.emainInput} placeholder=" Enter Email" editable></TextInput>
+        
+              <Pressable
+                style={[styles.button, styles.buttonClose]}
+                onPress={() => setModalVisible(!modalVisible)}>
+                <Text style={styles.textStyle}>Hide Modal</Text>
+              </Pressable>
+            </View>
+          </View>
+        </Modal>
+        <Pressable
+          style={[styles.button, styles.buttonOpen]}
+          onPress={() => setModalVisible(true)}>
+          <Text style={styles.textStyle}>Show Modal</Text>
+        </Pressable>
+                          </View>
+                          
+                        )}
+                        
                     />
-                </View>
+                    
                 {/* {savedJobs ? savedJobs.map((data) => {
                     return <Text>{data.id}   {data.title}</Text>
                 }) : <Text>No saved jobs</Text>} */}
 
         </View>
-
     )
 }
 export default Rewards;
