@@ -16,22 +16,17 @@ const Rewards: React.FC<Props> = ({ navigation }) => {
     const [jobData, setJobData] = useState([]);
     const isFocused = useIsFocused();
     const [refreshing, setRefreshing] = useState(false)
-
-    // useEffect(() => {
-
-    //     // const unsubscribe = navigation.addListener('focus', () => {
-    //     //     fetchData();
-    //     //     getSavedData();
-    //     // });
-
-    //     // return unsubscribe;
-    // }, [navigation])
-    useEffect(() => {
-          fetchData() 
-          getSavedData();
-      }, []);
-
     
+
+    useEffect(() => {
+        fetchData();
+    }, []);
+    
+    useEffect(() => {
+        if (jobData && jobData.length > 0) {
+            getSavedData();
+        }
+    }, [jobData]);
     const getSavedData = async () => {
        
         setIsLoading(true);
@@ -46,6 +41,7 @@ const Rewards: React.FC<Props> = ({ navigation }) => {
                         savedData.push(data)
                         console.log(saved)
                         return;
+
                     }
                 })
                 setSavedJobs(savedData);
