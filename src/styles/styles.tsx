@@ -1,13 +1,26 @@
 import { StyleSheet, Platform, StatusBar } from 'react-native';
 
 const styles = StyleSheet.create({
-  //for login
-    container: {
+  nameOfStyles:(isDark)=> ({
+      flex: 1,
+      backgroundColor: isDark === true ? '#222222' : "#c8dec8",
+      alignItems: 'center',
+      justifyContent: 'center',
+ }),
+ Text:(isDark)=> ({
+  color: isDark === true ?  '#ffffff' : '#000000',
+}),
+  //for login  
+  searchbar: {
+    backgroundColor: '#ffffff',
+  },
+  container: {
       flex: 1,
       backgroundColor: '#c8dec8',
       alignItems: 'center',
       justifyContent: 'center',
     },
+
     inner_container: {
       flex: 1,
       backgroundColor: '#c8dec8',

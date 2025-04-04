@@ -1,10 +1,10 @@
-import { Text, View, FlatList, ActivityIndicator, StatusBar, Button, ToastAndroid} from "react-native";
+import { Text, View, FlatList, ActivityIndicator, StatusBar, Button, ToastAndroid, TextInput} from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import { NavigationContainer } from "@react-navigation/native";
 import { Props } from '../navigation/props'
 import styles from "../styles/styles";
 import {useEffect, useState} from "react"
-
+import filter from "lodash.filter";
 
 
   const  Api = () => {
@@ -12,6 +12,8 @@ import {useEffect, useState} from "react"
     let[error,setError] = useState();
     let[savedata,setSavedData] = useState([]);
     let[response,setResponse] = useState([]);
+    let[searchQuery,setSearchQuery] = useState();
+    let[searchData, setSearchData] = useState([]);
     let ids = 1;
 
     useEffect(() => {
@@ -20,8 +22,10 @@ import {useEffect, useState} from "react"
       .then(
         (result) => {
           let newData = result.jobs.map((data: any, idx: any) => ({ ...data, id: ids++ }))
+          AsyncStorage.setItem('jobs', JSON.stringify(newData))
           setIsLoading(false)
           setResponse(newData)
+          setSearchData(newData)
         },
         (error) => {
           setIsLoading(false);
@@ -90,9 +94,28 @@ import {useEffect, useState} from "react"
         { id: '1', title: 'yadda yadda', description: 'yadda yadda', time: '2 hours ago' },
         { id: '2', title: 'yadda yadda', description: 'yadda yadda', time: '3 days ago' },
       ];
+
+      const handleSearch = (query) => {
+        setSearchQuery(query);
+        const formattedQuery = query.toLowerCase();
+        const filteredData = filter(searchData, (item) => {
+            return contains(item, formattedQuery);
+        })
+
+        setResponse(filteredData);
+    }
+    const contains = ({ title }, query) => {
+
+        if (title.toLowerCase()?.includes(query)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
     return (
         <View style={styles.home_container}>
       <Text style={styles.sectionTitle}>Listed Jobs</Text>
+      <TextInput style={styles.searchbar}value={searchQuery} onChangeText={(query) => handleSearch(query)}></TextInput>
       <FlatList
       
         data={response}

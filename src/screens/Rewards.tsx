@@ -1,32 +1,195 @@
-import { Text, View, ScrollView} from "react-native";
-import { NavigationContainer } from "@react-navigation/native";
-import { Props } from '../navigation/props'
+import React, { useEffect, useState } from "react";
+import { Text, View, TouchableOpacity, ScrollView, Button, Modal, SafeAreaView, ActivityIndicator, Image, FlatList } from "react-native";
+import { Props } from "../navigation/props";
 import styles from "../styles/styles";
-import {useEffect, useState} from "react"
-import AsyncStorage from "@react-native-async-storage/async-storage"
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
+import { useFocusEffect, useIsFocused } from "@react-navigation/native";
 
-const Rewards = () =>  {
-  const [marcomendolia,setMarcoMendolia] = useState([]);
-  useEffect(() => {
-    marcoFranco()
-  },[])
-  const marcoFranco =async () => {
-    let marcomarco = await AsyncStorage.getItem('saved');
-    marcomarco = JSON.parse(marcomarco)
-    setMarcoMendolia(marcomarco)
-  }
+const Rewards: React.FC<Props> = ({ navigation }) => {
+
+    const [openModal, setOpenModal] = useState(false);
+    const [savedJobs, setSavedJobs] = useState();
+    const [savedID, setSavedID] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [jobData, setJobData] = useState([]);
+    const isFocused = useIsFocused();
+    const [refreshing, setRefreshing] = useState(false)
+
+    // useEffect(() => {
+
+    //     // const unsubscribe = navigation.addListener('focus', () => {
+    //     //     fetchData();
+    //     //     getSavedData();
+    //     // });
+
+    //     // return unsubscribe;
+    // }, [navigation])
+    useEffect(() => {
+          fetchData() 
+          getSavedData();
+      }, []);
+
+    
+    const getSavedData = async () => {
+       
+        setIsLoading(true);
+        try {
+            let saved = await AsyncStorage.getItem('saved');
+            saved = JSON.parse(saved)
+            let savedData = [];
+    
+            if (saved) {
+                jobData.forEach(data => {
+                    if (saved.includes(data.id)) {
+                        savedData.push(data)
+                        console.log(saved)
+                        return;
+                    }
+                })
+                setSavedJobs(savedData);
+            } else {
+                setSavedJobs(null)
+            }
+        } catch (error) {
+            console.error(error);
+        }
+         finally {
+            setIsLoading(false);
+        }
+       
+    }
+
+    const fetchData = async () => {
+        setIsLoading(true);
+        
+        try {
+           
+            const data: any = await AsyncStorage.getItem('jobs')
+            // let saved = await AsyncStorage.getItem('saved');
+            // saved = JSON.parse(saved)
+            // const jobs = JSON.parse(data)
+            if (data) {
+                
+                // jobs.map((job) => {
+                //     console.log(job.id, job.title)
+                // } )
+                setJobData(JSON.parse(data))
+                
+            }
+            // getSavedData();
+
+        } catch (error: any) {
+            console.log(error)
+        } finally {
+            setIsLoading(false);
+        }
+    }
+
+    function renderModal() {
+        return (
+            <Modal visible={openModal} animationType="slide" transparent={true}>
+                <View style={styles.application_container}>
+                    <View style={styles.application_inner_container}>
+                        <Text>Insert Forms</Text>
+                        <TouchableOpacity onPress={() => setOpenModal(false)}>
+                            <Text>Close</Text>
+                        </TouchableOpacity>
+                    </View>
+
+                </View>
+            </Modal>
+        )
+    }
+
+    const handleRefresh = () => {
+        setRefreshing(true)
+
+        fetchData()
+        getSavedData()
+        setRefreshing(false)
+    }
+
+
+    if (isLoading) {
+        
+        return (
+            <SafeAreaView style={styles.loadingContainer}>
+                <ActivityIndicator size="large"/>
+                <Text>Loading...</Text>
+            </SafeAreaView>
+        )
+    }
+
+
+    const renderSavedJobs = ({ item }) => {
+        return (
+            <View key={item.id}>
+                <TouchableOpacity style={styles.job_list}>
+                    <View style={styles.job_list_inner}>
+                        <View style={styles.job_list_inner_img_wrapper}>
+                            <Image height={80} width={80} source={{ uri: item.companyLogo }} />
+                            <View style={styles.job_list_inner_txt}>
+                                <Text style={styles.job_list_inner_txt_title}>{item.title}</Text>
+                                <Text>{item.companyName}</Text>
+                                <Text style={styles.job_list_inner_txt_info}>{item.seniorityLevel} ● {item.workModel} ● {item.jobType}</Text>
+                            </View>
+                        </View>
+
+                    </View>
+                    <View style={{ marginBottom: 10 }}>
+                        <Text style={styles.job_list_inner_txt_salary}>{item.minSalary && item.maxSalary ? (
+                            <>
+                                <Text>${item.minSalary} - ${item.maxSalary}</Text>
+
+                            </>) : (
+                            <Text>Unknown Salary</Text>
+                        )}</Text>
+                    </View>
+                    <View style={{ alignItems: 'center', left: 10 }}>
+                        {/* <TouchableOpacity>
+                                            <Ionicons name="bookmark-outline" size={24} color={COLOURS.black} />
+                                        </TouchableOpacity> */}
+                        <TouchableOpacity>
+                            <Text>Apply for Job</Text>
+                        </TouchableOpacity>
+                    </View>
+                </TouchableOpacity>
+
+            </View>
+
+        )
+    }
+
     return (
-      <ScrollView>
-        <View>
-                 <View style={styles.joinedEvents}>
-        <Text style={styles.sectionTitle}>Saved Jobs</Text>
-        <View style={styles.eventCard}>
-          <Text style={styles.eventText}>{marcomendolia}</Text>
+
+        <View style={styles.eventItem}>
+                <View style={styles.savedJobs}>
+                    <Text style={styles.home_header_title}>Save Jobs</Text>
+                    <TouchableOpacity onPress={() => navigation.navigate('JobsFinder')}>
+                        <Ionicons name="home-outline" size={25}></Ionicons>
+                    </TouchableOpacity>
+                    
+                    {renderModal()}
+
+                </View>
+                <View>
+                    {/* {savedJobs ? savedJobs.map(renderSavedJobs) : <Text>No jobs saved</Text>} */}
+                    <FlatList
+                        data={savedJobs}
+                        renderItem={(item) => renderSavedJobs(item)}
+                        keyExtractor={(renderSavedJobs, index) => index.toString()}
+                        refreshing={refreshing}
+                        onRefresh={handleRefresh}
+                    />
+                </View>
+                {/* {savedJobs ? savedJobs.map((data) => {
+                    return <Text>{data.id}   {data.title}</Text>
+                }) : <Text>No saved jobs</Text>} */}
+
         </View>
-      </View>
-        </View>
-        </ScrollView>
+
     )
 }
-
 export default Rewards;
