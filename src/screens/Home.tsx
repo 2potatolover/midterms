@@ -117,7 +117,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
     }
     return (
         <View style={styles.home_container(isDark)}>
-      <Text style={styles.sectionTitle}>Listed Jobs</Text>
+      <Text style={styles.sectionTitle(isDark)}>Listed Jobs</Text>
       <TextInput placeholder="Search jobs here..."style={styles.searchbar}value={searchQuery} onChangeText={(query) => handleSearch(query)}></TextInput>
       <Text style={styles.Text(isDark)}>Dark Mode</Text>
 <Switch
