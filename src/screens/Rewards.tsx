@@ -189,7 +189,7 @@ const Rewards: React.FC<Props> = ({ navigation }) => {
               <Pressable
                 style={[styles.button, styles.buttonClose]}
                 onPress={() => setModalVisible(!modalVisible)}>
-                <Text style={styles.textStyle}>Hide Modal</Text>
+                <Text style={styles.textStyle}>Apply</Text>
               </Pressable>
             </View>
           </View>
@@ -197,7 +197,7 @@ const Rewards: React.FC<Props> = ({ navigation }) => {
         <Pressable
           style={[styles.button, styles.buttonOpen]}
           onPress={() => setModalVisible(true)}>
-          <Text style={styles.textStyle}>Show Modal</Text>
+          <Text style={styles.textStyle}>Apply</Text>
         </Pressable>
                           </View>
                           
